@@ -18,8 +18,9 @@ const App = ({hi}) => {
     const [Values, setValues] = useState()
     const [newMarkers, setNewMarkers] = useState([{}])
     const [player , setPlayer2]= useState()
-
-    //////////////
+const [dbData , setDbData] = useState([{}])
+const [memoBool ,  setMemoBool] = useState(false)
+//////////////
 const [inputtest, setInputest] = useState()
 
 
@@ -35,12 +36,11 @@ const [inputtest, setInputest] = useState()
 
 
 
-
+      let id
     useEffect(() => {
       console.log("dddddddddddd")
-      let id
       function sibal(){
-  id =  Axios.get('/marker').then(e => {return e.data.markers})
+  Axios.get('http://localhost:3002/marker').then(e => {return setDbData(e.data.markers) }).then(e => console.log("성공"))
 }
 sibal()
 
@@ -161,47 +161,30 @@ console.log(hi)
 player.markers.add([{
   time:player.cache_.currentTime,text:"Dddddddd",val : inputtest
 }])
-
-    // let d = new Date().getTime();
-    // const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    //     // tslint:disable-next-line:no-bitwise
-    //     const r = (d + Math.random() * 16) % 16 | 0;
-    //     d = Math.floor(d / 16);
-    //     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-    //   });
-    //   const body = {
-    //   time: memotime,
-    //   text: "marker",
-    //     val : "안녕",
-    //     key : uuid
-    // }
-
-    // setMemotime(memotime => [...memotime, currentVal])
-    // Axios.post('/marker' , body ).then(e => console.log(e))
   }
 
   const InsertMemo = () => {
+    setMemoBool(true)
     setMemotime(currentVal)
-    // await setMemotime(memotime => [...memotime, currentVal])
-    // setTestVal(1)
-
-
-    // const newtime = {
-    //   time: 2,
-    //   text: "marker",
-    //   key : uuid
-    // }
-    // console.log(newtime)
-    // setMarker(markerss.concat(newtime))
-    
-    // console.log("메모클릭")
-    // setMemoCheck(true)
   }
 
   const test =(e) => {
     setInputest(e.currentTarget.value)
     console.log(inputtest)
   }
+
+  const dbOn = () => {
+    console.log(dbData)
+    dbData.map(e => {
+              return  player.markers.add([{
+                time:e.time,text:"Dddddddd",val : e.val
+              }])
+  })
+}
+
+const memocheck =() => {
+  setMemoBool(false)
+}
 
     return (
         <div style={{ width: "100%" }}>
@@ -218,16 +201,23 @@ player.markers.add([{
           // controls 
           className="video-js"
         />
+        <p>메모 내용 : {Values} </p>
+        
 
         <span>재생시간: {currentTime}</span><br/>
         <span>멈춘시간: {currentVal}</span><br/>
-        <span>메모입력: {memotime}</span><br/>
+        <span>메모입력: {memotime}</span><br/><br/><br/>
+        {memoBool ? <Input onChange = {test} value ={inputtest} id = "inputs" ></Input> : ""
+        }
+        {memoBool ? <button onClick ={memocheck}>확인</button> : ""
+      }
+      <br/>
+
         <button onClick ={InsertMemo}>메모</button>
-        <button onClick ={checkc} className = "insert">저장</button>
-        <button className = "target">확인</button>
+        <button onClick ={checkc} className = "insert">마크표시</button>
+        <button onClick ={dbOn} className = "target">데이터베이스</button>
         {/* <GlobalStyle /> */}
-        <p>{Values}</p>
-        <Input onChange = {test} value ={inputtest} id = "inputs" ></Input>
+    
       </div>
     );
 };
