@@ -189,7 +189,7 @@ const memocheck =() => {
     return (
         <div style={{ width: "100%" }}>
         <video
-        style={{ width: "500px", height:"300px" }}
+        style={{ width: "650px", height:"400px" }}
           ref={videoPlayerRef}
           // src={`../${Video.fileName}`}
           // frameborder="0" 
@@ -202,11 +202,7 @@ const memocheck =() => {
           className="video-js"
         />
         <p>메모 내용 : {Values} </p>
-        
 
-        <span>재생시간: {currentTime}</span><br/>
-        <span>멈춘시간: {currentVal}</span><br/>
-        <span>메모입력: {memotime}</span><br/><br/><br/>
         {memoBool ? <Input onChange = {test} value ={inputtest} id = "inputs" ></Input> : ""
         }
         {memoBool ? <button onClick ={memocheck}>확인</button> : ""

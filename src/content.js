@@ -7,7 +7,7 @@ import App from "./App";
 class Main extends React.Component {
     render() {
         return (
-            <Frame head={[<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL("/static/css/content.css")} ></link>,<link href="videojs.markers.plugin.css" rel="stylesheet"/>, <link href="https://cdnjs.cloudflare.com/ajax/libs/videojs-markers/0.7.0/videojs.markers.css" rel="stylesheet"></link>, <link href="//vjs.zencdn.net/6.1.0/video-js.css" rel="stylesheet"></link>]}> 
+            <Frame className="frame" width = "1070px" height ="550px" head={[<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL("/static/css/content.css")} ></link>,<link href="videojs.markers.plugin.css" rel="stylesheet"/>, <link href="https://cdnjs.cloudflare.com/ajax/libs/videojs-markers/0.7.0/videojs.markers.css" rel="stylesheet"></link>, <link href="//vjs.zencdn.net/6.1.0/video-js.css" rel="stylesheet"></link>]}> 
                <FrameContextConsumer>
                {
                   ({document, window}) => {
@@ -23,11 +23,49 @@ class Main extends React.Component {
 const app = document.createElement('div');
 app.id = "my-extension-root";
 const hi = "hi"
-document.body.appendChild(app);
-ReactDOM.render(<Main />, app);
 
 app.style.display = "none";
-app.style.width = "44%"
+app.style.width = "100%"
+app.style.height = "50%"
+
+
+
+const li = document.getElementById("breadcrumbs")
+li.innerHTML = "<button id = 'btn'>버튼입니다</button>";
+document.getElementById("btn")?.addEventListener('click' , btnclick)
+function btnclick(){
+  console.log("dddddd")
+  let tagname = document.getElementsByTagName("iframe")[1]
+  console.log(tagname)
+  console.log(tagname.contentWindow?.document.getElementsByTagName("div")[0].getElementsByClassName("xnbc-body")[0])
+let tagtag = tagname.contentWindow?.document.getElementsByTagName("div")[0].getElementsByClassName("xnbc-body")[0]
+tagtag.innerHTML = ""
+tagtag.appendChild(app)
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+console.log(document.getElementsByClassName("ellipsible")[2])
+
+
+// let test = document.getElementsByClassName("ellipsible")[2]
+// test.innerHTML = "<button id = 'btn' sytle ='color:red'>버튼입니다</button>";
+
+// let bodytag = tagname.contentWindow?.document.getElementsByTagName("div")[0].getElementsByClassName("xnbc-body")[0]
+
+console.log(document.getElementsByTagName("iframe")[1])
+// console.log(bodytag)
+// bodytag.appendChild(app);
+document.body.appendChild(app)
+
+
+ReactDOM.render(<Main />, app);
+
+
+
+
+
+
 
 chrome.runtime.onMessage.addListener(
    function(request, sender, sendResponse) {
