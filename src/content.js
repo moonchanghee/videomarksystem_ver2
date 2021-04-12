@@ -27,7 +27,7 @@ document.body.appendChild(app);
 ReactDOM.render(<Main />, app);
 
 app.style.display = "none";
-app.style.width = "43%"
+app.style.width = "44%"
 
 chrome.runtime.onMessage.addListener(
    function(request, sender, sendResponse) {

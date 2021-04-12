@@ -198,7 +198,7 @@ const memocheck =() => {
           // encrypted-media
           //  gyroscope
           src = "https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4"
-          // controls 
+          controls 
           className="video-js"
         />
         <p>메모 내용 : {Values} </p>
