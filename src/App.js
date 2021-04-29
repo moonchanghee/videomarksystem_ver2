@@ -1,18 +1,21 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import videojs from "video.js";
 import 'videojs-markers'
 import Axios from 'axios';
 import $ from "jquery";
-import {Input} from "antd"
-const App = ({hi}) => {
+import {Input, Button} from "antd"
+const { TextArea } = Input;
 
+const App = ({hi}) => {
   const [markers , setmarkers] = useState([{}])
 
     const videoPlayerRef = useRef(null); // Instead of ID
     const text = useRef(null); // Instead of ID
     const [currentTime, setCurrentTime] = useState(null);
     // const videoSrc = `../${Video.fileName}`;   
-    const videoSrc ="https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4" 
+    // const videoSrc ="https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4" 
     const [currentVal , setCurrentVal] = useState(0)
     const [memotime,  setMemotime] = useState()
     const [Values, setValues] = useState()
@@ -22,6 +25,7 @@ const [dbData , setDbData] = useState([{}])
 const [memoBool ,  setMemoBool] = useState(false)
 //////////////
 const [inputtest, setInputest] = useState()
+const [inputdata, setinputdata] = useState()
 
 
     ////
@@ -46,7 +50,7 @@ sibal()
 
         if (videoPlayerRef.current) {
          let player = videojs(videoPlayerRef.current, videoJSOptions, () => {
-            player.src(videoSrc);
+            player.src(hi);
             player.on("ended", () => {
               console.log("ended");
             });
@@ -186,8 +190,13 @@ const memocheck =() => {
   setMemoBool(false)
 }
 
+const inputChange =(e) => {
+  setinputdata(e.currentTarget.value)
+}
+
     return (
         <div style={{ width: "100%" }}>
+        <div style ={{float:"left"}}>
         <video
         style={{ width: "650px", height:"400px" }}
           ref={videoPlayerRef}
@@ -197,7 +206,8 @@ const memocheck =() => {
           // autoplay 
           // encrypted-media
           //  gyroscope
-          src = "https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4"
+          // src = "https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4"
+          src ={hi}
           controls 
           className="video-js"
         />
@@ -209,11 +219,42 @@ const memocheck =() => {
       }
       <br/>
 
-        <button onClick ={InsertMemo}>메모</button>
-        <button onClick ={checkc} className = "insert">마크표시</button>
-        <button onClick ={dbOn} className = "target">데이터베이스</button>
+        <Button onClick ={InsertMemo}>메모</Button>
+        <Button onClick ={checkc} className = "insert">마크표시</Button>
+        <Button onClick ={dbOn} className = "target">데이터베이스</Button>
         {/* <GlobalStyle /> */}
-    
+        </div>
+        <div style ={{float:"right" , marginRight:"10%"}}>
+        <TextArea
+        value={inputdata}
+        onChange={inputChange}
+        placeholder="내용 입력"
+        autoSize={{ minRows: 10, maxRows: 200 }}
+      />
+      <CKEditor
+
+  editor={ClassicEditor}
+  
+  data="<p>Hello from CKEditor 5!</p>"
+  
+  onInit={(editor) => {
+    console.log("Editor is ready to use!", editor);
+  }}
+  
+  onChange={(event, editor) => {
+    const data = editor.getData();
+    console.log({ event, editor, data });
+  }}
+  
+  onBlur={(event, editor) => {
+    console.log("Blur.", editor);
+  }}
+  
+  onFocus={(event, editor) => {
+    console.log("Focus.", editor);
+  }}
+></CKEditor>
+        </div>
       </div>
     );
 };

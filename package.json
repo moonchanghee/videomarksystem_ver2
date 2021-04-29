@@ -5,6 +5,8 @@
   "proxy": "http://localhost:3002",
   "dependencies": {
     "@babel/runtime": "^7.10.4",
+    "@ckeditor/ckeditor5-build-classic": "^27.1.0",
+    "@ckeditor/ckeditor5-react": "^3.0.2",
     "antd": "^4.15.0",
     "autoprefixer": "^9.8.5",
     "axios": "^0.21.1",
