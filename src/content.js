@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import App from './App';
+import { Button, message } from 'antd';
 import 'antd/dist/antd.css';
 class Main extends React.Component {
   render() {
@@ -82,8 +83,19 @@ ReactDOM.render(<Main />, app);
 //   console.log(e)
 // })
 
+const key = 'updatable';
+
+const openMessage = () => {
+  console.log('dddddddddddddddddd');
+  message.loading({ content: 'Loading...', key });
+  setTimeout(() => {
+    message.success({ content: 'Loaded!', key, duration: 2 });
+  }, 1000);
+};
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === 'clicked_browser_action') {
+    console.log('쿠ㅡ릭');
     toggle();
   }
 });
@@ -101,7 +113,7 @@ function toggle() {
       'iframe'
     )[0];
 
-    //  tagtag.innerHTML = ""
+    tagtag.innerHTML = '';
     tagtag.appendChild(app);
     app.style.display = 'block';
 

@@ -9,7 +9,6 @@ import { Input, Button, Spin, Alert, Switch } from 'antd';
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
-// import { debug } from 'webpack';
 
 const { TextArea } = Input;
 
@@ -60,82 +59,53 @@ const App = ({ hi }) => {
     }
 
     if (videoPlayerRef.current) {
-      let player = videojs(
-        videoPlayerRef.current,
-        videoJSOptions,
-        // 'videojs-overlay-player',
-        () => {
-          player.src(hi);
-          player.on('ended', () => {
-            console.log('ended');
-          });
-          player.on('play', function () {
-            console.log(markers);
-            console.log(newMarkers);
-            //  sibal()
-            //  id = Axios.get('/marker').then(async e => {return e}).then(e => {return e.data.markers})
-            // id = await Axios.get('/marker').then(async e => {return e.data.markers})
-          });
+      let player = videojs(videoPlayerRef.current, videoJSOptions, () => {
+        player.src(hi);
+        player.on('ended', () => {
+          console.log('ended');
+        });
+        player.on('play', function () {
+          console.log(markers);
+          console.log(newMarkers);
+          //  id = Axios.get('/marker').then(async e => {return e}).then(e => {return e.data.markers})
+          // id = await Axios.get('/marker').then(async e => {return e.data.markers})
+        });
 
-          player.on('timeupdate', function () {
-            setCurrentTime(player.currentTime());
-          });
+        player.on('timeupdate', function () {
+          setCurrentTime(player.currentTime());
+        });
 
-          player.on('pause', function () {
-            //현재 비디오 정지 체크
-            // console.log(id[0].time)
-            // console.log("stop")
-            var isPaused = player.paused();
-            if (isPaused) {
-              //정지 되었다면 현재 멈춘만큼의 시간을 체크해서 저장.
-              setCurrentVal(Number(player.cache_.currentTime));
-            }
-            return false;
-          });
+        player.on('pause', function () {
+          //현재 비디오 정지 체크
+          // console.log(id[0].time)
+          // console.log("stop")
+          var isPaused = player.paused();
+          if (isPaused) {
+            //정지 되었다면 현재 멈춘만큼의 시간을 체크해서 저장.
+            setCurrentVal(Number(player.cache_.currentTime));
+          }
+          return false;
+        });
 
-          // player.overlay({
-          //   overlays: [
-          //     {
-          //       content: 'dddddddddddddddddddddddd',
-          //       // This overlay appears at 3 seconds and disappears at 15 seconds.
-          //       start: 3,
-          //       end: 15,
-          //     },
-          //     {
-          //       content: 'dddddddddddddddddddddddd',
-          //       // This overlay appears at 7 seconds and disappears at 22 seconds.
-          //       start: 7,
-          //       end: 22,
-          //       align: 'bottom',
-          //     },
-          //   ],
-          // });
-          // player.markers.
-        }
-      );
-
-      // var player2 = (window.player = videojs('videojs-overlay-player'));
-      // player.overlay({
-      //   content: 'Dddddddddddd0',
-      //   debug: true,
-      //   overlays: [
-      //     {
-      //       start: 0,
-      //       end: 15,
-      //       align: 'bottom-left',
-      //     },
-      //     {
-      //       start: 15,
-      //       end: 30,
-      //       align: 'bottom',
-      //     },
-      //     {
-      //       start: 30,
-      //       end: 45,
-      //       align: 'bottom-right',
-      //     },
-      //   ],
-      // });
+        // player.overlay({
+        //   overlays: [
+        //     {
+        //       content: 'dddddddddddddddddddddddd',
+        //       // This overlay appears at 3 seconds and disappears at 15 seconds.
+        //       start: 3,
+        //       end: 15,
+        //     },
+        //     {
+        //       content: 'dddddddddddddddddddddddd',
+        //       // This overlay appears at 7 seconds and disappears at 22 seconds.
+        //       start: 7,
+        //       end: 22,
+        //       align: 'bottom',
+        //     },
+        //   ],
+        // });
+        // player.markers.
+      });
 
       setPlayer2(player);
       player.markers({
@@ -226,48 +196,57 @@ const App = ({ hi }) => {
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      <div style={{ float: 'left' }}>
-        <video
-          style={{ width: '650px', height: '400px' }}
-          ref={videoPlayerRef}
-          // src={`../${Video.fileName}`}
-          // frameborder="0"
-          // allow="accelerometer"
-          // autoplay
-          // encrypted-media
-          //  gyroscope
-          // src = "https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4"
-          src={hi}
-          controls
-          className="video-js"
-        />
-        <p>메모 내용 : {Values} </p>
+    <>
+      <div style={{ width: '100%' }}>
+        <div>
+          <div style={{ float: 'left' }}>
+            <video
+              style={{ width: '700px', height: '400px' }}
+              ref={videoPlayerRef}
+              src={hi}
+              controls
+              className="video-js"
+            />
+            <p>메모 내용 : {Values} </p>
 
-        {memoBool ? (
-          <Input onChange={test} value={inputtest} id="inputs"></Input>
-        ) : (
-          ''
-        )}
-        {memoBool ? <button onClick={memocheck}>확인</button> : ''}
-        <br />
-
-        <Button onClick={InsertMemo}>메모</Button>
-        <Button onClick={checkc} className="insert">
-          마크표시
-        </Button>
-        <Button onClick={dbOn} className="target">
-          데이터베이스
-        </Button>
-        {/* <GlobalStyle /> */}
+            <Button onClick={InsertMemo}>메모장</Button>
+            <Button onClick={checkc} className="insert">
+              마크표시
+            </Button>
+            <Button onClick={dbOn} className="target">
+              데이터베이스
+            </Button>
+            {/* <GlobalStyle /> */}
+          </div>
+          <div style={{ float: 'right', width: '20%', marginRight: '10%' }}>
+            {memoBool ? (
+              <TextArea
+                placeholder="textarea with clear icon"
+                allowClear
+                onChange={test}
+                value={inputtest || transcript}
+              />
+            ) : (
+              ''
+            )}
+            {memoBool ? (
+              <div>
+                <Button onClick={memocheck}>저장</Button>
+                <Button onClick={SpeechRecognition.startListening}>
+                  Start
+                </Button>
+                <Button onClick={SpeechRecognition.stopListening}>Stop</Button>
+                <Button onClick={resetTranscript}>Reset</Button>
+                <p>{transcript}</p>
+              </div>
+            ) : (
+              ''
+            )}
+            <br />
+          </div>
+        </div>
       </div>
-      <div>
-        <Button onClick={SpeechRecognition.startListening}>Start</Button>
-        <Button onClick={SpeechRecognition.stopListening}>Stop</Button>
-        <Button onClick={resetTranscript}>Reset</Button>
-        <p>{transcript}</p>
-      </div>
-    </div>
+    </>
   );
 };
 
