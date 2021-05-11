@@ -25,9 +25,13 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-frame-component": "^4.1.2",
+    "react-speech-recognition": "^3.8.0",
+    "regenerator-runtime": "^0.13.7",
     "resolve": "^1.17.0",
     "video.js": "^7.11.8",
     "videojs-markers": "^1.0.1",
+    "videojs-overlay": "^2.1.4",
+    "videojs-overlay-hyperlink": "^1.0.1",
     "whatwg-fetch": "3.2.0"
   },
   "scripts": {

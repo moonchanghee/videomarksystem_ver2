@@ -1,0 +1,27 @@
+{
+    "editor.tabSize": 4,
+    "javascript.preferences.quoteStyle": "single",
+    "explorer.confirmDragAndDrop": false,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+    },
+    "breadcrumbs.enabled": true,
+    "diffEditor.ignoreTrimWhitespace": true,
+    "editor.suggestSelection": "first",
+    "prettier.singleQuote": true,
+    "prettier.jsxSingleQuote": false,
+    "editor.formatOnSave": true,
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    "javascript.format.enable": false,
+    "window.zoomLevel": -1,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "markdown.preview.lineHeight": 1.4,
+    "editor.fontFamily": "Apple gothic, Menlo, Monaco, 'Courier New', monospace",
+    "editor.hideCursorInOverviewRuler": true,
+    "git.confirmSync": false,
+    "editor.renderWhitespace": "none",
+    "editor.renderControlCharacters": false,
+    "json.schemas": [],
+    "editor.fontSize": 18
+  }

@@ -59,10 +59,10 @@ module.exports = {
   // In production, we only want to load the polyfills and the app code.
   entry: {
     app: [require.resolve('./polyfills'), paths.appIndexJs],
-    content: [require.resolve('./polyfills'), './src/content.js']
+    content: [require.resolve('./polyfills'), './src/content.js'],
   },
   optimization: {
-    minimize: false //Update this to true or false
+    minimize: false, //Update this to true or false
   },
   output: {
     // The build folder.
@@ -75,7 +75,7 @@ module.exports = {
     // We inferred the "public path" (such as / or /my-project) from homepage.
     publicPath: publicPath,
     // Point sourcemap entries to original disk location (format as URL on Windows)
-    devtoolModuleFilenameTemplate: info =>
+    devtoolModuleFilenameTemplate: (info) =>
       path
         .relative(paths.appSrc, info.absoluteResourcePath)
         .replace(/\\/g, '/'),
@@ -97,7 +97,6 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
@@ -128,7 +127,6 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -156,17 +154,16 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              
               compact: true,
             },
           },
           {
             test: /\.s[sc]ss$/,
             use: [
-              {loader: MiniCssExtractPlugin.loader},
+              { loader: MiniCssExtractPlugin.loader },
               require.resolve('css-loader'),
-              require.resolve('sass-loader')
-            ]
+              require.resolve('sass-loader'),
+            ],
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
@@ -182,7 +179,7 @@ module.exports = {
           // in the main CSS file.
           {
             test: /\.css$/,
-            use: [{loader: MiniCssExtractPlugin.loader},'css-loader']
+            use: [{ loader: MiniCssExtractPlugin.loader }, 'css-loader'],
             // loader: ExtractTextPlugin.extract(
             //   Object.assign(
             //     {
