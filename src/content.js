@@ -4,16 +4,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import App from './App';
+// import Popup from './Popup';
+import registerServiceWorker from './registerServiceWorker';
 import { Button, message } from 'antd';
 import 'antd/dist/antd.css';
+
 class Main extends React.Component {
   render() {
     return (
       <Frame
         frameborder="0"
         className="frame"
-        width="1070px"
-        height="550px"
+        width="1200px"
+        // height="550px"
+        height="800px"
         head={[
           <link
             type="text/css"
@@ -41,6 +45,10 @@ class Main extends React.Component {
             href="path/to/videojs-overlay-hyperlink.css"
             rel="stylesheet"
           ></link>,
+          <link
+            href="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"
+            rel="stylesheet"
+          ></link>,
         ]}
       >
         <FrameContextConsumer>
@@ -57,7 +65,7 @@ class Main extends React.Component {
 
 const app = document.createElement('div');
 app.id = 'my-extension-root';
-const hi =
+let hi =
   'https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4';
 
 app.style.display = 'none';
@@ -76,6 +84,8 @@ app.style.height = '50%';
 //   let tagname = document.getElementsByTagName("iframe")[1]
 // let tagtag = tagname.contentWindow?.document.getElementsByTagName("div")[0].getElementsByClassName("xnbc-body")[0]
 // }
+
+// ReactDOM.render(<Popup />, document.getElementById('popup'));
 
 ReactDOM.render(<Main />, app);
 
@@ -96,12 +106,7 @@ const openMessage = () => {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === 'clicked_browser_action') {
     console.log('쿠ㅡ릭');
-    toggle();
-  }
-});
-
-function toggle() {
-  if (app.style.display === 'none') {
+    //
     let tagname = document.getElementsByTagName('iframe')[1];
     let tagtag = tagname.contentWindow?.document
       .getElementsByTagName('div')[0]
@@ -109,21 +114,51 @@ function toggle() {
     let mainframe = tagname.contentWindow?.document
       .getElementsByTagName('div')[0]
       .getElementsByTagName('iframe')[0];
-    let mainframe2 = mainframe?.contentWindow?.document.getElementsByTagName(
-      'iframe'
-    )[0];
+    let mainframe2 =
+      mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
 
     tagtag.innerHTML = '';
     tagtag.appendChild(app);
     app.style.display = 'block';
 
-    console.log(mainframe);
-    console.log(mainframe2);
+    // console.log(
+    //   'player-area',
+    //   mainframe2.contentWindow.document.getElementById('player-area')
+    // );
+    // hi = mainframe2.getAttribute('src');
+    console.log(mainframe2.getAttribute('src'));
+    console.log(URL.createObjectURL(mainframe2.getAttribute('src')));
+
     console.log(
-      mainframe2.contentWindow.document.getElementById('player-area')
+      'player-area',
+      mainframe2.contentWindow.document.getElementById('60407d8a30d63-page')
     );
-    let data = mainframe2?.contentWindow.document.getElementsByTagName('div');
-    // window.postMessage(data , "https://canvas.dongseo.ac.kr" )
+
+    toggle();
+  }
+});
+
+function toggle() {
+  if (app.style.display === 'none') {
+    // let tagname = document.getElementsByTagName('iframe')[1];
+    // let tagtag = tagname.contentWindow?.document
+    //   .getElementsByTagName('div')[0]
+    //   .getElementsByClassName('xnbc-body')[0];
+    // let mainframe = tagname.contentWindow?.document
+    //   .getElementsByTagName('div')[0]
+    //   .getElementsByTagName('iframe')[0];
+    // let mainframe2 =
+    //   mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
+    // tagtag.innerHTML = '';
+    // tagtag.appendChild(app);
+    // app.style.display = 'block';
+    // console.log(mainframe);
+    // console.log(mainframe2);
+    // console.log(
+    //   mainframe2.contentWindow.document.getElementById('player-area')
+    // );
+    // let data = mainframe2?.contentWindow.document.getElementsByTagName('div');
+    // // window.postMessage(data , "https://canvas.dongseo.ac.kr" )
   } else {
     app.style.display = 'none';
   }
