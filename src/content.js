@@ -6,6 +6,7 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import App from './App';
 import { message, Button } from 'antd';
 import 'antd/dist/antd.css';
+import { element } from 'prop-types';
 
 class Main extends React.Component {
   render() {
@@ -82,31 +83,70 @@ app.style.height = '100%';
 //   mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
 
 ReactDOM.render(<Main />, app);
-
+let test;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  // window.open(mainframe2.getAttribute('src'));
-  if (request.message === 'clicked_browser_action') {
-    // console.log('쿠ㅡ릭');
-    let playButton = document.getElementsByClassName(
-      'vc-front-screen-play-btn'
-    )[0];
-    console.log(playButton);
-    playButton.click();
-    setTimeout(() => {
-      test2 = document
-        .getElementsByClassName('vc-vplay-video1')[0]
-        .getAttribute('src');
-      console.log(test2);
-      app.style.display = 'block';
-      console.log(document.body);
-      document.body.innerHTML = '';
-      document.body.appendChild(app);
-      console.log(document.body);
-      videosrc = test2;
-    }, 3000);
-    // toggle();
-  }
+  console.log('fst');
+  console.log('request1', request);
+  test = request.message;
+  const tagname = document.getElementsByTagName('iframe')[1];
+  let mainframe = tagname.contentWindow?.document
+    .getElementsByTagName('div')[0]
+    .getElementsByTagName('iframe')[0];
+  let mainframe2 =
+    mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
+  window.open(mainframe2.getAttribute('src'));
 });
 
-// function toggle() {
-// }
+setTimeout(() => {
+  console.log('클릭');
+  let playButton = document.getElementsByClassName(
+    'vc-front-screen-btn-container'
+  )[0];
+  playButton.addEventListener('click', () => {
+    console.log('dd');
+  });
+  playButton.click();
+
+  // playButton.click();
+  console.log('playButton', playButton);
+});
+
+setTimeout(() => {
+  console.log('settimeout');
+  test2 = document
+    .getElementsByClassName('vc-vplay-video1')[0]
+    .getAttribute('src');
+  console.log(test2);
+  app.style.display = 'block';
+  console.log(document.body);
+  document.body.innerHTML = '';
+  document.body.appendChild(app);
+  console.log(document.body);
+  videosrc = test2;
+}, 3000);
+
+// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+//   // window.open(mainframe2.getAttribute('src'));
+//   console.log('request2', request);
+//   if (request.message === 'clicked_browser_action') {
+//     // console.log('쿠ㅡ릭');
+//     let playButton = document.getElementsByClassName(
+//       'vc-front-screen-play-btn'
+//     )[0];
+//     console.log(playButton);
+//     playButton.click();
+//     setTimeout(() => {
+//       test2 = document
+//         .getElementsByClassName('vc-vplay-video1')[0]
+//         .getAttribute('src');
+//       console.log(test2);
+//       app.style.display = 'block';
+//       console.log(document.body);
+//       document.body.innerHTML = '';
+//       document.body.appendChild(app);
+//       console.log(document.body);
+//       videosrc = test2;
+//     }, 3000);
+//     // toggle();
+//   }
+// });
