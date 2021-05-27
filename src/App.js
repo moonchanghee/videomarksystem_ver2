@@ -14,10 +14,9 @@ import draftToHtml from 'draftjs-to-html';
 import parse from 'html-react-parser';
 
 const { TextArea } = Input;
-const { Text, Link } = Typography;
-const App = ({ hi }) => {
+const { Text } = Typography;
+const App = ({ videosrc }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [markers, setmarkers] = useState([{}]);
   const { transcript, resetTranscript } = useSpeechRecognition();
   const videoPlayerRef = useRef(null); // Instead of ID
   const text = useRef(null); // Instead of ID
@@ -25,7 +24,6 @@ const App = ({ hi }) => {
   const [currentVal, setCurrentVal] = useState(0);
   const [memotime, setMemotime] = useState();
   const [Values, setValues] = useState('');
-  const [newMarkers, setNewMarkers] = useState([{}]);
   const [player, setPlayer2] = useState();
   const [dbData, setDbData] = useState([{}]);
   const [memoBool, setMemoBool] = useState(false);
@@ -33,6 +31,7 @@ const App = ({ hi }) => {
   const [inputdata, setinputdata] = useState();
   const [voiceBool, setVoiceBool] = useState(false);
   const [indexNum, setIndex] = useState();
+  const [removeTime, setRemoveTime] = useState();
   const onEditorStateChange = (editorState) => {
     // editorState에 값 설정
     setEditorState(editorState);
@@ -49,20 +48,16 @@ const App = ({ hi }) => {
 
   let id;
 
-  // console.log(
-  //   'editorState =>',
-  //   draftToHtml(convertToRaw(editorState.getCurrentContent()))
-  // );
-
   useEffect(() => {
+    let dataArr = [];
     function GetDb() {
       Axios.get('http://localhost:3002/marker')
         .then((e) => {
           return setDbData(e.data.markers);
+          // return dataArr.push(e.data.markers);
         })
-        .then((e) => console.log('성공'));
+        .then((e) => console.log('dataArr', dataArr));
     }
-    GetDb();
 
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
       return null;
@@ -70,12 +65,25 @@ const App = ({ hi }) => {
 
     if (videoPlayerRef.current) {
       let player = videojs(videoPlayerRef.current, videoJSOptions, () => {
-        player.src(hi);
+        player.src(videosrc);
         player.on('ended', () => {
           console.log('ended');
         });
         player.on('play', function () {
           console.log('play');
+          // dbOn();
+          // dataArr.map((e, index) => {
+          //   console.log('e.time', e[index].time);
+          //   player.markers.add([
+          //     {
+          //       time: e[index].time,
+          //       text: 'Dddddddd',
+          //       val: e[index].val,
+          //     },
+          //   ]);
+          //   return e;
+          // });
+
           // console.log(markers);
           // console.log(newMarkers);
           //  id = Axios.get('/marker').then(async e => {return e}).then(e => {return e.data.markers})
@@ -118,21 +126,27 @@ const App = ({ hi }) => {
         },
         onMarkerReached: function (marker, index) {
           setValues(marker.val);
-          console.log(index);
+          setRemoveTime(marker.time);
           setIndex(index);
         },
 
         markers: [],
       });
-
-      let dd = inputtest;
-      // console.log(id);
     }
+    GetDb();
   }, []);
 
+  const markerPost = (time, text, val) => {
+    const body = {
+      time: time,
+      text: text,
+      val: val,
+    };
+    Axios.post('http://localhost:3002/marker', body).then((e) =>
+      console.log('e', e)
+    );
+  };
   const checkc = () => {
-    // console.log('저장저장');
-    // console.log(hi);
     player.markers.add([
       {
         time: player.cache_.currentTime,
@@ -140,8 +154,8 @@ const App = ({ hi }) => {
         val: inputtest,
       },
     ]);
+    markerPost(player.cache_.currentTime, 'Dddddddd', inputtest);
   };
-
   const checkc2 = () => {
     player.markers.add([
       {
@@ -150,6 +164,11 @@ const App = ({ hi }) => {
         val: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       },
     ]);
+    markerPost(
+      player.cache_.currentTime,
+      'Dddddddd',
+      draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    );
   };
 
   const InsertMemo = () => {
@@ -159,11 +178,11 @@ const App = ({ hi }) => {
 
   const test = (e) => {
     setInputest(e.currentTarget.value);
-    // console.log(inputtest);
   };
 
   const dbOn = () => {
-    // console.log(dbData);
+    console.log('dbon func');
+    console.log(dbData);
     dbData.map((e) => {
       return player.markers.add([
         {
@@ -192,20 +211,23 @@ const App = ({ hi }) => {
   };
 
   const remove = () => {
-    console.log(indexNum);
     player.markers.remove([indexNum]);
-    // console.log(player.markers.index());
+    console.log(removeTime);
+    Axios.delete('http://localhost:3002/marker/' + removeTime).then((e) =>
+      console.log(e)
+    );
+    setValues('');
   };
 
   return (
     <>
       <div style={{ width: '100%' }}>
         <div>
-          <div style={{ float: 'left', width: '60%' }}>
+          <div style={{ float: 'left', width: '50%' }}>
             <video
-              style={{ width: '700px', height: '400px' }}
+              style={{ width: '850px', height: '500px' }}
               ref={videoPlayerRef}
-              src={hi}
+              src={videosrc}
               controls
               className="video-js"
             />

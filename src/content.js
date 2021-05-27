@@ -4,9 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import App from './App';
-// import Popup from './Popup';
-import registerServiceWorker from './registerServiceWorker';
-import { Button, message } from 'antd';
+import { message, Button } from 'antd';
 import 'antd/dist/antd.css';
 
 class Main extends React.Component {
@@ -16,8 +14,7 @@ class Main extends React.Component {
         frameborder="0"
         className="frame"
         width="1200px"
-        // height="550px"
-        height="800px"
+        height="3000px"
         head={[
           <link
             type="text/css"
@@ -54,7 +51,12 @@ class Main extends React.Component {
         <FrameContextConsumer>
           {({ document, window }) => {
             return (
-              <App document={document} window={window} hi={hi} isExt={true} />
+              <App
+                document={document}
+                window={window}
+                videosrc={videosrc}
+                isExt={true}
+              />
             );
           }}
         </FrameContextConsumer>
@@ -65,101 +67,46 @@ class Main extends React.Component {
 
 const app = document.createElement('div');
 app.id = 'my-extension-root';
-let hi =
-  'https://dongseo.commonscdn.com/contents3/dongseol01/606c570419ce9/contents/media_files/mobile/ssmovie.mp4';
+let test2;
+let videosrc;
 
 app.style.display = 'none';
 app.style.width = '100%';
-app.style.height = '50%';
+app.style.height = '100%';
 
-// canvas.dongseo.ac.kr
-
-// dcms.dongseo.ac.kr
-// const li = document.getElementById("breadcrumbs")
-// console.log("adf;lkajsdf;klj")
-// li.innerHTML = "<button id = 'btn'>버튼입니다</button>";
-// document.getElementById("btn")?.addEventListener('click' , btnclick)
-// function btnclick(){
-//   console.log("dddddd")
-//   let tagname = document.getElementsByTagName("iframe")[1]
-// let tagtag = tagname.contentWindow?.document.getElementsByTagName("div")[0].getElementsByClassName("xnbc-body")[0]
-// }
-
-// ReactDOM.render(<Popup />, document.getElementById('popup'));
+// const tagname = document.getElementsByTagName('iframe')[1];
+// let mainframe = tagname.contentWindow?.document
+//   .getElementsByTagName('div')[0]
+//   .getElementsByTagName('iframe')[0];
+// let mainframe2 =
+//   mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
 
 ReactDOM.render(<Main />, app);
 
-//   window.addEventListener('message' ,function(e){
-//   console.log(e)
-// })
-
-const key = 'updatable';
-
-const openMessage = () => {
-  console.log('dddddddddddddddddd');
-  message.loading({ content: 'Loading...', key });
-  setTimeout(() => {
-    message.success({ content: 'Loaded!', key, duration: 2 });
-  }, 1000);
-};
-
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  // window.open(mainframe2.getAttribute('src'));
   if (request.message === 'clicked_browser_action') {
-    console.log('쿠ㅡ릭');
-    //
-    let tagname = document.getElementsByTagName('iframe')[1];
-    let tagtag = tagname.contentWindow?.document
-      .getElementsByTagName('div')[0]
-      .getElementsByClassName('xnbc-body')[0];
-    let mainframe = tagname.contentWindow?.document
-      .getElementsByTagName('div')[0]
-      .getElementsByTagName('iframe')[0];
-    let mainframe2 =
-      mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
-
-    tagtag.innerHTML = '';
-    tagtag.appendChild(app);
-    app.style.display = 'block';
-
-    // console.log(
-    //   'player-area',
-    //   mainframe2.contentWindow.document.getElementById('player-area')
-    // );
-    // hi = mainframe2.getAttribute('src');
-    console.log(mainframe2.getAttribute('src'));
-    console.log(URL.createObjectURL(mainframe2.getAttribute('src')));
-
-    console.log(
-      'player-area',
-      mainframe2.contentWindow.document.getElementById('60407d8a30d63-page')
-    );
-
-    toggle();
+    // console.log('쿠ㅡ릭');
+    let playButton = document.getElementsByClassName(
+      'vc-front-screen-play-btn'
+    )[0];
+    console.log(playButton);
+    playButton.click();
+    setTimeout(() => {
+      test2 = document
+        .getElementsByClassName('vc-vplay-video1')[0]
+        .getAttribute('src');
+      console.log(test2);
+      app.style.display = 'block';
+      console.log(document.body);
+      document.body.innerHTML = '';
+      document.body.appendChild(app);
+      console.log(document.body);
+      videosrc = test2;
+    }, 3000);
+    // toggle();
   }
 });
 
-function toggle() {
-  if (app.style.display === 'none') {
-    // let tagname = document.getElementsByTagName('iframe')[1];
-    // let tagtag = tagname.contentWindow?.document
-    //   .getElementsByTagName('div')[0]
-    //   .getElementsByClassName('xnbc-body')[0];
-    // let mainframe = tagname.contentWindow?.document
-    //   .getElementsByTagName('div')[0]
-    //   .getElementsByTagName('iframe')[0];
-    // let mainframe2 =
-    //   mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
-    // tagtag.innerHTML = '';
-    // tagtag.appendChild(app);
-    // app.style.display = 'block';
-    // console.log(mainframe);
-    // console.log(mainframe2);
-    // console.log(
-    //   mainframe2.contentWindow.document.getElementById('player-area')
-    // );
-    // let data = mainframe2?.contentWindow.document.getElementsByTagName('div');
-    // // window.postMessage(data , "https://canvas.dongseo.ac.kr" )
-  } else {
-    app.style.display = 'none';
-  }
-}
+// function toggle() {
+// }

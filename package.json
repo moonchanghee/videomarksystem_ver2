@@ -2,8 +2,7 @@
   "name": "my-extension",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3002"  ,
-
+  "proxy": "http://localhost:3002",
   "dependencies": {
     "@babel/runtime": "^7.10.4",
     "@ckeditor/ckeditor5-build-classic": "^27.1.0",
@@ -13,6 +12,7 @@
     "axios": "^0.21.1",
     "case-sensitive-paths-webpack-plugin": "^2.3.0",
     "chalk": "^4.1.0",
+    "cheerio": "^1.0.0-rc.9",
     "css-loader": "^3.6.0",
     "dotenv": "^8.2.0",
     "dotenv-expand": "^5.1.0",
