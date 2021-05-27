@@ -32,6 +32,7 @@ const App = ({ videosrc }) => {
   const [voiceBool, setVoiceBool] = useState(false);
   const [indexNum, setIndex] = useState();
   const [removeTime, setRemoveTime] = useState();
+  const scrArr = videosrc.split('/');
   const onEditorStateChange = (editorState) => {
     // editorState에 값 설정
     setEditorState(editorState);
@@ -51,7 +52,7 @@ const App = ({ videosrc }) => {
   useEffect(() => {
     let dataArr = [];
     function GetDb() {
-      Axios.get('http://localhost:3002/marker')
+      Axios.get('http://localhost:3002/marker/' + scrArr[5])
         .then((e) => {
           return setDbData(e.data.markers);
           // return dataArr.push(e.data.markers);
@@ -141,7 +142,9 @@ const App = ({ videosrc }) => {
       time: time,
       text: text,
       val: val,
+      src: scrArr[5],
     };
+    console.log(body);
     Axios.post('http://localhost:3002/marker', body).then((e) =>
       console.log('e', e)
     );
