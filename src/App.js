@@ -98,7 +98,7 @@ const App = ({ videosrc }) => {
         markerTip: {
           display: true,
           text: function (markers) {
-            return '제목: ' + markers.text;
+            return 'Title : ' + markers.text;
           },
           time: function (markers) {
             return markers.time;
@@ -107,8 +107,9 @@ const App = ({ videosrc }) => {
         onMarkerClick: function (marker) {
           // console.log('Ddddddddddddddddddd');
         },
-        onMarkerReached: function (marker, index) {
+        onMarkerReached: function (marker, index, e) {
           setValues(marker.val);
+          console.log('e', e);
           setRemoveTime(marker.time);
           setIndex(index);
         },
@@ -127,9 +128,7 @@ const App = ({ videosrc }) => {
       src: scrArr[5],
     };
     console.log(body);
-    Axios.post('http://localhost:3002/marker', body).then((e) =>
-      console.log('e', e)
-    );
+    Axios.post('http://localhost:3002/marker', body);
   };
   const checkc = () => {
     player.markers.add([
@@ -147,13 +146,12 @@ const App = ({ videosrc }) => {
       {
         time: player.cache_.currentTime,
         text: title,
-        duration: 0.12,
         val: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       },
     ]);
     markerPost(
       player.cache_.currentTime,
-      'Dddddddd',
+      title,
       draftToHtml(convertToRaw(editorState.getCurrentContent()))
     );
   };
@@ -168,22 +166,16 @@ const App = ({ videosrc }) => {
   };
 
   const dbOn = () => {
-    console.log('dbon func');
-    console.log(dbData);
     dbData.map((e) => {
       return player.markers.add([
         {
           time: e.time,
-          text: 'Dddddddd',
+          text: e.text,
           val: e.val,
         },
       ]);
     });
   };
-
-  setTimeout(() => {
-    dbOn();
-  }, 0.1);
 
   const memocheck = () => {
     setMemoBool(false);
@@ -203,10 +195,7 @@ const App = ({ videosrc }) => {
 
   const remove = () => {
     player.markers.remove([indexNum]);
-    console.log(removeTime);
-    Axios.delete('http://localhost:3002/marker/' + removeTime).then((e) =>
-      console.log(e)
-    );
+    Axios.delete('http://localhost:3002/marker/' + removeTime);
     setValues('');
   };
 
@@ -228,9 +217,9 @@ const App = ({ videosrc }) => {
             <Button shape="round" onClick={voiceOn} className="target">
               {voiceBool ? <p>speech on</p> : <p>speech off</p>}
             </Button>
-            {/**  <Button onClick={dbOn} className="target">
+            <Button onClick={dbOn} className="target">
               마크 불러오기
-  </Button>**/}
+            </Button>
 
             <Button shape="round" onClick={remove}>
               삭제
@@ -304,12 +293,17 @@ const App = ({ videosrc }) => {
                 </Button>
               </div>
             ) : (
-              ''
+              <div
+                style={{
+                  marginTop: '10%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  height: '50%',
+                }}
+              >
+                <Text mark>{parse(`${Values}`)}</Text>
+              </div>
             )}
-
-            <div style={{ marginTop: '10%', alignContent: 'center' }}>
-              <Text mark>{parse(`${Values}`)}</Text>
-            </div>
           </div>
         </div>
       </div>
