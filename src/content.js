@@ -95,24 +95,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   let mainframe2 =
     mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
   window.open(mainframe2.getAttribute('src'));
+  // toggle();
 });
 
 setTimeout(() => {
-  console.log('클릭');
   let playButton = document.getElementsByClassName(
-    'vc-front-screen-btn-container'
+    'vc-front-screen-play-btn'
   )[0];
-  playButton.addEventListener('click', () => {
-    console.log('dd');
-  });
+  console.log('playButton1', playButton);
   playButton.click();
-
-  // playButton.click();
-  console.log('playButton', playButton);
-});
+}, 500);
 
 setTimeout(() => {
-  console.log('settimeout');
+  let playButton = document.getElementsByClassName(
+    'vc-front-screen-play-btn'
+  )[0];
+  console.log('playButton2', playButton);
   test2 = document
     .getElementsByClassName('vc-vplay-video1')[0]
     .getAttribute('src');
@@ -123,30 +121,9 @@ setTimeout(() => {
   document.body.appendChild(app);
   console.log(document.body);
   videosrc = test2;
-}, 3000);
+}, 4000);
 
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   // window.open(mainframe2.getAttribute('src'));
-//   console.log('request2', request);
-//   if (request.message === 'clicked_browser_action') {
-//     // console.log('쿠ㅡ릭');
-//     let playButton = document.getElementsByClassName(
-//       'vc-front-screen-play-btn'
-//     )[0];
-//     console.log(playButton);
-//     playButton.click();
-//     setTimeout(() => {
-//       test2 = document
-//         .getElementsByClassName('vc-vplay-video1')[0]
-//         .getAttribute('src');
-//       console.log(test2);
-//       app.style.display = 'block';
-//       console.log(document.body);
-//       document.body.innerHTML = '';
-//       document.body.appendChild(app);
-//       console.log(document.body);
-//       videosrc = test2;
-//     }, 3000);
-//     // toggle();
-//   }
-// });
+const toggle = () => {
+  console.log('toggleOn');
+  alert('hi');
+};
