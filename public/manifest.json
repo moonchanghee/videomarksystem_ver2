@@ -6,6 +6,11 @@
   "background": {
     "scripts": ["app/background.js"]
   },
+  "icons" : {
+    "16" : "videonoteicon.png",
+    "48": "videonoteicon.png",
+    "128": "videonoteicon.png"
+  },
   "content_scripts" : [
     {
       "matches": [ "<all_urls>" ],

@@ -12,6 +12,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import parse from 'html-react-parser';
+import { AudioOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -41,8 +42,6 @@ const App = ({ videosrc }) => {
   const videoJSOptions = {
     autoplay: false,
     controls: true,
-    // width: 500,
-    // height: 500,
     userActions: { hotkeys: true },
     playbackRates: [0.5, 1, 1.5, 2],
   };
@@ -72,23 +71,6 @@ const App = ({ videosrc }) => {
         });
         player.on('play', function () {
           console.log('play');
-          // dbOn();
-          // dataArr.map((e, index) => {
-          //   console.log('e.time', e[index].time);
-          //   player.markers.add([
-          //     {
-          //       time: e[index].time,
-          //       text: 'Dddddddd',
-          //       val: e[index].val,
-          //     },
-          //   ]);
-          //   return e;
-          // });
-
-          // console.log(markers);
-          // console.log(newMarkers);
-          //  id = Axios.get('/marker').then(async e => {return e}).then(e => {return e.data.markers})
-          // id = await Axios.get('/marker').then(async e => {return e.data.markers})
         });
 
         player.on('timeupdate', function () {
@@ -153,17 +135,19 @@ const App = ({ videosrc }) => {
     player.markers.add([
       {
         time: player.cache_.currentTime,
-        text: 'Dddddddd',
+        text: '',
         val: inputtest,
       },
     ]);
-    markerPost(player.cache_.currentTime, 'Dddddddd', inputtest);
+    markerPost(player.cache_.currentTime, '', inputtest);
   };
   const checkc2 = () => {
+    let title = prompt('title 입력');
     player.markers.add([
       {
         time: player.cache_.currentTime,
-        text: 'Dddddddd',
+        text: title,
+        duration: 0.12,
         val: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       },
     ]);
@@ -197,6 +181,10 @@ const App = ({ videosrc }) => {
     });
   };
 
+  setTimeout(() => {
+    dbOn();
+  }, 0.1);
+
   const memocheck = () => {
     setMemoBool(false);
   };
@@ -228,7 +216,7 @@ const App = ({ videosrc }) => {
         <div>
           <div style={{ float: 'left', width: '50%' }}>
             <video
-              style={{ width: '850px', height: '500px' }}
+              style={{ width: '100%', height: '500px' }}
               ref={videoPlayerRef}
               src={videosrc}
               controls
@@ -238,13 +226,15 @@ const App = ({ videosrc }) => {
               {memoBool ? <p>Text Editor on</p> : <p>Text Editor off</p>}
             </Button>
             <Button shape="round" onClick={voiceOn} className="target">
-              {voiceBool ? <p>Voice on</p> : <p>voice off</p>}
+              {voiceBool ? <p>speech on</p> : <p>speech off</p>}
             </Button>
-            <Button onClick={dbOn} className="target">
+            {/**  <Button onClick={dbOn} className="target">
               마크 불러오기
-            </Button>
+  </Button>**/}
 
-            <Button onClick={remove}>삭제</Button>
+            <Button shape="round" onClick={remove}>
+              삭제
+            </Button>
 
             <br />
             <br />
@@ -270,8 +260,11 @@ const App = ({ videosrc }) => {
             ) : (
               ''
             )}
+          </div>
+          <div style={{ float: 'right', width: '50%' }}>
+            <br />
             {memoBool ? (
-              <div style={{ backgroundColor: '#F2F2F2' }}>
+              <div style={{ height: '450px', overflow: 'scroll' }}>
                 <MyBlock>
                   <Editor
                     // 에디터와 툴바 모두에 적용되는 클래스
@@ -299,6 +292,12 @@ const App = ({ videosrc }) => {
                     onEditorStateChange={onEditorStateChange}
                   />
                 </MyBlock>
+              </div>
+            ) : (
+              ''
+            )}
+            {memoBool ? (
+              <div style={{ float: 'bottom' }}>
                 <Button onClick={memocheck}>닫기</Button>
                 <Button onClick={checkc2} className="insert">
                   저장
@@ -307,10 +306,8 @@ const App = ({ videosrc }) => {
             ) : (
               ''
             )}
-          </div>
-          <div style={{ float: 'right', width: '20%', marginRight: '10%' }}>
-            <br />
-            <div style={{ marginTop: '10%' }}>
+
+            <div style={{ marginTop: '10%', alignContent: 'center' }}>
               <Text mark>{parse(`${Values}`)}</Text>
             </div>
           </div>

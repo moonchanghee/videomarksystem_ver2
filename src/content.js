@@ -6,7 +6,6 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import App from './App';
 import { message, Button } from 'antd';
 import 'antd/dist/antd.css';
-import { element } from 'prop-types';
 
 class Main extends React.Component {
   render() {
@@ -75,13 +74,6 @@ app.style.display = 'none';
 app.style.width = '100%';
 app.style.height = '100%';
 
-// const tagname = document.getElementsByTagName('iframe')[1];
-// let mainframe = tagname.contentWindow?.document
-//   .getElementsByTagName('div')[0]
-//   .getElementsByTagName('iframe')[0];
-// let mainframe2 =
-//   mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
-
 ReactDOM.render(<Main />, app);
 let test;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -95,7 +87,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   let mainframe2 =
     mainframe?.contentWindow?.document.getElementsByTagName('iframe')[0];
   window.open(mainframe2.getAttribute('src'));
-  // toggle();
 });
 
 setTimeout(() => {
@@ -122,8 +113,3 @@ setTimeout(() => {
   console.log(document.body);
   videosrc = test2;
 }, 4000);
-
-const toggle = () => {
-  console.log('toggleOn');
-  alert('hi');
-};
