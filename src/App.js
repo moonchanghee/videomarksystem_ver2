@@ -33,7 +33,11 @@ const App = ({ videosrc }) => {
   const [voiceBool, setVoiceBool] = useState(false);
   const [indexNum, setIndex] = useState();
   const [removeTime, setRemoveTime] = useState();
+  const [duration, setduration] = useState();
+  const [time, settime] = useState();
+  const [valueBool, setValueBool] = useState(false);
   const scrArr = videosrc.split('/');
+  const [Bool, setBool] = useState(false);
   const onEditorStateChange = (editorState) => {
     // editorState에 값 설정
     setEditorState(editorState);
@@ -107,13 +111,25 @@ const App = ({ videosrc }) => {
         onMarkerClick: function (marker) {
           // console.log('Ddddddddddddddddddd');
         },
-        onMarkerReached: function (marker, index, e) {
+        onMarkerReached: function (marker, index) {
           setValues(marker.val);
-          console.log('e', e);
           setRemoveTime(marker.time);
           setIndex(index);
+          setduration(marker.duration);
+          settime(marker.time);
+          setBool(true);
+          // console.log('marker.duration', marker.duration);
+          // console.log('marker.time', marker.time);
+          console.log('player', player.currentTime());
+          console.log(currentTime);
+          // if (
+          //   Math.floor(marker.time) + Math.floor(marker.duration) ===
+          //   Math.floor(player.currentTime())
+          // ) {
+          //   setBool(false);
+          //   console.log('false');
+          // }
         },
-
         markers: [],
       });
     }
@@ -135,6 +151,7 @@ const App = ({ videosrc }) => {
       {
         time: player.cache_.currentTime,
         text: '',
+        // duration: 60,
         val: inputtest,
       },
     ]);
@@ -145,15 +162,18 @@ const App = ({ videosrc }) => {
     player.markers.add([
       {
         time: player.cache_.currentTime,
+        // start: player.cache_.currentTime,
+        duration: 10,
         text: title,
         val: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       },
     ]);
-    markerPost(
-      player.cache_.currentTime,
-      title,
-      draftToHtml(convertToRaw(editorState.getCurrentContent()))
-    );
+
+    // markerPost(
+    //   player.cache_.currentTime,
+    //   title,
+    //   draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    // );
   };
 
   const InsertMemo = () => {
@@ -198,6 +218,19 @@ const App = ({ videosrc }) => {
     Axios.delete('http://localhost:3002/marker/' + removeTime);
     setValues('');
   };
+
+  let bool;
+
+  if (
+    Math.floor(currentTime) >= Math.floor(time) &&
+    Math.floor(currentTime) <= Math.floor(time + duration)
+  ) {
+    bool = true;
+    console.log(true);
+  } else {
+    bool = false;
+    console.log(false);
+  }
 
   return (
     <>
@@ -253,7 +286,9 @@ const App = ({ videosrc }) => {
           <div style={{ float: 'right', width: '50%' }}>
             <br />
             {memoBool ? (
-              <div style={{ height: '450px', overflow: 'scroll' }}>
+              <div
+                style={{ height: '450px', overflow: 'auto', marginLeft: '5%' }}
+              >
                 <MyBlock>
                   <Editor
                     // 에디터와 툴바 모두에 적용되는 클래스
@@ -286,7 +321,33 @@ const App = ({ videosrc }) => {
               ''
             )}
             {memoBool ? (
-              <div style={{ float: 'bottom' }}>
+              <div style={{ float: 'right' }}>
+                <Button onClick={memocheck}>닫기</Button>
+                <Button onClick={checkc2} className="insert">
+                  저장
+                </Button>
+              </div>
+            ) : (
+              ''
+            )}
+
+            {bool ? (
+              <div
+                style={{
+                  marginTop: '10%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  height: '50%',
+                }}
+              >
+                <Text mark>{parse(`${Values}`)}</Text>
+              </div>
+            ) : (
+              ''
+            )}
+
+            {/**  {memoBool ? (
+              <div style={{ float: 'right' }}>
                 <Button onClick={memocheck}>닫기</Button>
                 <Button onClick={checkc2} className="insert">
                   저장
@@ -303,7 +364,7 @@ const App = ({ videosrc }) => {
               >
                 <Text mark>{parse(`${Values}`)}</Text>
               </div>
-            )}
+            )}*/}
           </div>
         </div>
       </div>
