@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import videojs from 'video.js';
 import 'videojs-markers';
 import Axios from 'axios';
@@ -12,7 +12,6 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import parse from 'html-react-parser';
-import { AudioOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -20,7 +19,6 @@ const App = ({ videosrc }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { transcript, resetTranscript } = useSpeechRecognition();
   const videoPlayerRef = useRef(null); // Instead of ID
-  const text = useRef(null); // Instead of ID
   const [currentTime, setCurrentTime] = useState(null);
   const [currentVal, setCurrentVal] = useState(0);
   const [memotime, setMemotime] = useState();
@@ -35,9 +33,17 @@ const App = ({ videosrc }) => {
   const [removeTime, setRemoveTime] = useState();
   const [duration, setduration] = useState();
   const [time, settime] = useState();
-  const [valueBool, setValueBool] = useState(false);
   const scrArr = videosrc.split('/');
-  const [Bool, setBool] = useState(false);
+  const [rangeBool, rangesetBool] = useState(false);
+  const [startch, setstartch] = useState();
+  const [endch, setendch] = useState();
+
+  const [startMinute, setstartMinute] = useState(0);
+  const [startSecond, setstartSecond] = useState(0);
+
+  const [endMinute, setendMinute] = useState(0);
+  const [endSecond, setendSecond] = useState(0);
+
   const onEditorStateChange = (editorState) => {
     // editorState에 값 설정
     setEditorState(editorState);
@@ -50,15 +56,12 @@ const App = ({ videosrc }) => {
     playbackRates: [0.5, 1, 1.5, 2],
   };
 
-  let id;
-
   useEffect(() => {
     let dataArr = [];
     function GetDb() {
       Axios.get('http://localhost:3002/marker/' + scrArr[5])
         .then((e) => {
           return setDbData(e.data.markers);
-          // return dataArr.push(e.data.markers);
         })
         .then((e) => console.log('dataArr', dataArr));
     }
@@ -108,27 +111,13 @@ const App = ({ videosrc }) => {
             return markers.time;
           },
         },
-        onMarkerClick: function (marker) {
-          // console.log('Ddddddddddddddddddd');
-        },
+        onMarkerClick: function (marker) {},
         onMarkerReached: function (marker, index) {
           setValues(marker.val);
           setRemoveTime(marker.time);
           setIndex(index);
           setduration(marker.duration);
           settime(marker.time);
-          setBool(true);
-          // console.log('marker.duration', marker.duration);
-          // console.log('marker.time', marker.time);
-          console.log('player', player.currentTime());
-          console.log(currentTime);
-          // if (
-          //   Math.floor(marker.time) + Math.floor(marker.duration) ===
-          //   Math.floor(player.currentTime())
-          // ) {
-          //   setBool(false);
-          //   console.log('false');
-          // }
         },
         markers: [],
       });
@@ -136,12 +125,13 @@ const App = ({ videosrc }) => {
     GetDb();
   }, []);
 
-  const markerPost = (time, text, val) => {
+  const markerPost = (time, text, val, duration) => {
     const body = {
       time: time,
       text: text,
       val: val,
       src: scrArr[5],
+      duration: duration,
     };
     console.log(body);
     Axios.post('http://localhost:3002/marker', body);
@@ -159,21 +149,30 @@ const App = ({ videosrc }) => {
   };
   const checkc2 = () => {
     let title = prompt('title 입력');
+    let du;
+    // rangeBool
+    if (rangeBool) {
+      du = endch - startch;
+    } else {
+      du = 10;
+    }
+
     player.markers.add([
       {
         time: player.cache_.currentTime,
-        // start: player.cache_.currentTime,
-        duration: 10,
+        duration: du,
         text: title,
         val: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       },
     ]);
 
-    // markerPost(
-    //   player.cache_.currentTime,
-    //   title,
-    //   draftToHtml(convertToRaw(editorState.getCurrentContent()))
-    // );
+    markerPost(
+      player.cache_.currentTime,
+      title,
+      draftToHtml(convertToRaw(editorState.getCurrentContent())),
+      du
+    );
+    setMemoBool(false);
   };
 
   const InsertMemo = () => {
@@ -192,6 +191,7 @@ const App = ({ videosrc }) => {
           time: e.time,
           text: e.text,
           val: e.val,
+          duration: e.du,
         },
       ]);
     });
@@ -199,10 +199,7 @@ const App = ({ videosrc }) => {
 
   const memocheck = () => {
     setMemoBool(false);
-  };
-
-  const inputChange = (e) => {
-    setinputdata(e.currentTarget.value);
+    rangesetBool(false);
   };
 
   const voiceOn = () => {
@@ -217,6 +214,34 @@ const App = ({ videosrc }) => {
     player.markers.remove([indexNum]);
     Axios.delete('http://localhost:3002/marker/' + removeTime);
     setValues('');
+  };
+
+  const range_mark = () => {
+    rangesetBool(true);
+  };
+
+  const startM = () => {
+    setstartch(currentTime);
+    setstartMinute(Math.floor(currentTime / 60));
+    setstartSecond(
+      Math.round(
+        (Math.floor(currentTime) / 60 - Math.floor(currentTime / 60)).toFixed(
+          2
+        ) * 60
+      )
+    );
+  };
+
+  const endM = () => {
+    setendch(currentTime);
+    setendMinute(Math.floor(currentTime / 60));
+    setendSecond(
+      Math.round(
+        (Math.floor(currentTime) / 60 - Math.floor(currentTime / 60)).toFixed(
+          2
+        ) * 60
+      )
+    );
   };
 
   let bool;
@@ -287,16 +312,24 @@ const App = ({ videosrc }) => {
             <br />
             {memoBool ? (
               <div
-                style={{ height: '450px', overflow: 'auto', marginLeft: '5%' }}
+                style={{
+                  height: '450px',
+                  overflow: 'scroll',
+                  marginLeft: '5%',
+                  marginRight: '5%',
+                }}
               >
                 <MyBlock>
                   <Editor
                     // 에디터와 툴바 모두에 적용되는 클래스
-                    wrapperClassName="wrapper-class"
+                    // wrapperClassName="wrapper-class"
+                    wrapperClassName="wrapperClassName"
                     // 에디터 주변에 적용된 클래스
-                    editorClassName="editor"
+                    // editorClassName="editor"
+                    editorClassName=" editorClassName"
                     // 툴바 주위에 적용된 클래스
-                    toolbarClassName="toolbar-class"
+                    // toolbarClassName="toolbar-class"
+                    toolbarClassName="toolbarClassName"
                     // 툴바 설정
                     toolbar={{
                       // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼것인지
@@ -305,7 +338,7 @@ const App = ({ videosrc }) => {
                       link: { inDropdown: true },
                       history: { inDropdown: false },
                     }}
-                    placeholder="내용을 작성해주세요."
+                    placeholder=""
                     // 한국어 설정
                     localization={{
                       locale: 'ko',
@@ -320,12 +353,41 @@ const App = ({ videosrc }) => {
             ) : (
               ''
             )}
+
             {memoBool ? (
-              <div style={{ float: 'right' }}>
-                <Button onClick={memocheck}>닫기</Button>
-                <Button onClick={checkc2} className="insert">
-                  저장
-                </Button>
+              <div
+                style={{
+                  float: 'right',
+                  display: 'inline-block',
+                  marginRight: '5%',
+                }}
+              >
+                {rangeBool ? (
+                  <div style={{ display: 'inline-block' }}>
+                    <Button onClick={startM}>시작</Button>
+                    {startMinute} 분 {startSecond}초{' '}
+                    <Button onClick={endM}>끝</Button>
+                    {endMinute} 분 {endSecond}초{' '}
+                    <Button
+                      onClick={checkc2}
+                      className="insert"
+                      // style={{ marginLeft: '5%' }}
+                    >
+                      저장
+                    </Button>
+                    <Button onClick={memocheck}>닫기</Button>
+                  </div>
+                ) : (
+                  <div>
+                    <Button onClick={checkc2} className="insert">
+                      저장
+                    </Button>
+                    <Button onClick={memocheck}>닫기</Button>
+                    <Button onClick={range_mark} className="insert">
+                      마킹범위
+                    </Button>
+                  </div>
+                )}
               </div>
             ) : (
               ''
@@ -345,26 +407,6 @@ const App = ({ videosrc }) => {
             ) : (
               ''
             )}
-
-            {/**  {memoBool ? (
-              <div style={{ float: 'right' }}>
-                <Button onClick={memocheck}>닫기</Button>
-                <Button onClick={checkc2} className="insert">
-                  저장
-                </Button>
-              </div>
-            ) : (
-              <div
-                style={{
-                  marginTop: '10%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  height: '50%',
-                }}
-              >
-                <Text mark>{parse(`${Values}`)}</Text>
-              </div>
-            )}*/}
           </div>
         </div>
       </div>
