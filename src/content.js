@@ -77,8 +77,6 @@ app.style.height = '100%';
 ReactDOM.render(<Main />, app);
 let test;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log('fst');
-  console.log('request1', request);
   test = request.message;
   const tagname = document.getElementsByTagName('iframe')[1];
   let mainframe = tagname.contentWindow?.document
@@ -93,7 +91,6 @@ setTimeout(() => {
   let playButton = document.getElementsByClassName(
     'vc-front-screen-play-btn'
   )[0];
-  console.log('playButton1', playButton);
   playButton.click();
 }, 500);
 
@@ -101,15 +98,11 @@ setTimeout(() => {
   let playButton = document.getElementsByClassName(
     'vc-front-screen-play-btn'
   )[0];
-  console.log('playButton2', playButton);
   test2 = document
     .getElementsByClassName('vc-vplay-video1')[0]
     .getAttribute('src');
-  console.log(test2);
   app.style.display = 'block';
-  console.log(document.body);
   document.body.innerHTML = '';
   document.body.appendChild(app);
-  console.log(document.body);
   videosrc = test2;
 }, 4000);
